@@ -410,6 +410,7 @@ checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, pass
   return(response)
 }
 
+
 #' Write to a Socrata dataset (full replace or upsert)
 #'
 #' @description Method for updating Socrata datasets 
@@ -417,7 +418,7 @@ checkUpdateResponse <- function(json_data_to_upload, url, http_verb, email, pass
 #' @param dataframe - dataframe to upload to Socrata
 #' @param dataset_json_endpoint - Socrata Open Data Application Program Interface (SODA) endpoint (JSON only for now)
 #' @param update_mode - "UPSERT" or "REPLACE"; consult http://dev.socrata.com/publishers/getting-started.html 
-#' @param email - The email to the Socrata account with read access to the dataset
+#' @param email - The email to the Socrata account with write access to the dataset
 #' @param password - The password associated with the email to the Socrata account
 #' @param app_token - a (non-required) string; SODA API token can be used to query the data 
 #' portal \url{http://dev.socrata.com/consumers/getting-started.html}

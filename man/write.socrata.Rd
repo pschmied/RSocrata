@@ -14,7 +14,7 @@ write.socrata(dataframe, dataset_json_endpoint, update_mode, email, password,
 
 \item{update_mode}{- "UPSERT" or "REPLACE"; consult http://dev.socrata.com/publishers/getting-started.html}
 
-\item{email}{- The email to the Socrata account with read access to the dataset}
+\item{email}{- The email to the Socrata account with write access to the dataset}
 
 \item{password}{- The password associated with the email to the Socrata account}
 
