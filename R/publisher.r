@@ -88,27 +88,29 @@ apply_revision <- function(apply_path, schema_id, domain, username, password) {
 #'
 #' Create an empty source that can subsequently be populated by a data upload  
 #' @param filename Filename to register with web API
-#' @param upload_path Returned from API
+#' @param source_path Returned from API
 #' @param domain Socrata domain
 #' @param username Username (email address) to be used for authentication
 #' @param password Password to be used for authentication
 #' @return HTTP response
 #' @author Peter Schmiedeskamp \email{peter.schmiedeskamp@@socrata.com}
 #' @noRd
-create_source <- function(filename, upload_path,
+create_source <- function(filename, source_path,
                           domain, username, password,
                           fourfour, revision_seq ) { # fourfour and
                                                      # revision_seq
                                                      # will not be
                                                      # needed soon
     u <- httr::modify_url("", scheme = "https", hostname = domain,
-                      path = upload_path)
+                      path = source_path)
 
     body <- list(
+      source_type = list(
         filename = filename,
-        fourfour = fourfour,
-        revision_seq = revision_seq
-        )
+        type = "upload"),
+      fourfour = fourfour,
+      revision_seq = revision_seq
+    )
  
     r <- httr::POST(u, body = body, httr::authenticate(username, password),
                     encode = "json")
@@ -123,8 +125,8 @@ create_source <- function(filename, upload_path,
 #' Upload data to a source
 #'
 #' Populates a source with uploaded data
-#' @param filepath Path to file to use as upload
-#' @param mimetype Mimetype of file upload
+#' @param filepath Path to file to use as source
+#' @param mimetype Mimetype of file source
 #' @param bytes_path Returned from web API
 #' @param domain Socrata domain
 #' @param username Username (email address) to be used for authentication
@@ -140,7 +142,7 @@ upload_to_source <- function(filepath, mimetype, bytes_path,
               httr::authenticate(username, password))
 
     assertthat::assert_that(round(httr::status_code(r), -2) == 200,
-                            msg = "Filling upload failed")
+                            msg = "Filling source failed")
 
     r
 }
@@ -178,21 +180,21 @@ write_socrata <- function(dataframe, fourfour = NULL, name = NULL,
         fourfour <- httr::content(resp_view)$id
     }
 
-    ## Create a revision, extract the upload path, apply_path, and revision_seq
+    ## Create a revision, extract the source path, apply_path, and revision_seq
     resp_rev  <- create_revision("replace", fourfour, domain, username, password)
-    upload_path <- httr::content(resp_rev)$links$create_upload
+    source_path <- httr::content(resp_rev)$links$create_source
     apply_path <- httr::content(resp_rev)$links$apply
     revision_seq <- httr::content(resp_rev)$resource$revision_seq
 
-    ## Create an upload, extract the bytes path, first / only output_schema_id
-    resp_src <- create_source(basename(filepath), upload_path, domain,
+    ## Create an source, extract the bytes path, first / only output_schema_id
+    resp_src <- create_source(basename(filepath), source_path, domain,
                               username, password, fourfour, revision_seq)
     bytes_path <- httr::content(resp_src)$links$bytes
 
-    ## Push data to the upload
-    resp_upload <- upload_to_source(filepath, "text/csv", bytes_path,
+    ## Push data to the source
+    resp_source <- upload_to_source(filepath, "text/csv", bytes_path,
                                     domain, username, password)
-    schema_id <- httr::content(resp_upload)$resource$output_schemas[[1]]$id
+    schema_id <- httr::content(resp_source)$resource$output_schemas[[1]]$id
     
     ## Apply the revision
     apply_revision(apply_path, schema_id, domain, username, password)

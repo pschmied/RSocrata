@@ -23,11 +23,18 @@ Imports:
     plyr (>= 1.8.4),
     tools (>= 3.3.3),
     assertthat (>= 0.2.0),
-    readr (>= 0.2.2)
+    readr (>= 0.2.2),
+    DBI (>= 0.3.0),
+    methods
 Suggests:
     testthat (>= 0.10.0),
     roxygen2 (>= 4.1.0),
+    DBItest
 License: MIT + file LICENSE
 URL: https://github.com/Chicago/RSocrata
 BugReports: https://github.com/Chicago/RSocrata/issues
 RoxygenNote: 6.0.1
+Collate: 
+    'RSocrata.R'
+    'dbi.r'
+    'publisher.r'
