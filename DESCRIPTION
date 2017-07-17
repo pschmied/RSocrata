@@ -36,5 +36,5 @@ BugReports: https://github.com/Chicago/RSocrata/issues
 RoxygenNote: 6.0.1
 Collate: 
     'RSocrata.R'
-    'dbi.r'
     'publisher.r'
+    'dbi.r'
